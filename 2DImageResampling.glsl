@@ -147,7 +147,7 @@ float get_weight(float x)
 #define sigmoidize(rgba) (MIDPOINT - log(1.0 / clamp((1.0 / (1.0 + exp(CONTRAST * (MIDPOINT - 1.0))) - 1.0 / (1.0 + exp(CONTRAST * MIDPOINT))) * rgba + 1.0 / (1.0 + exp(CONTRAST * MIDPOINT)), EPSILON, 1.0 - EPSILON) - 1.0) / CONTRAST)
 #define desigmoidize(rgba) (1.0 / (1.0 + exp(CONTRAST * (MIDPOINT - rgba))) - 1.0 / (1.0 + exp(CONTRAST * MIDPOINT))) / ( 1.0 / (1.0 + exp(CONTRAST * (MIDPOINT - 1.0))) - 1.0 / (1.0 + exp(CONTRAST * MIDPOINT)))
 
-//main alorithm
+//main algorithm
 vec4 hook()
 {
     //HOOKED_pos == texture coordinates [0.0, 1.0], vec2(u, v)
