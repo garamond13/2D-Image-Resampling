@@ -8,3 +8,4 @@ The shader is controlled under `user configurable` section by changing macro val
 ## Notes
 - the shader is not optimised for speed
 - antiringing behaves a bit differently compared with the same technique implemented in separated passes
+- in general, you may expect slightly different results from different implementations
