@@ -95,9 +95,7 @@ float interpolating_quadratic(float x);
 //usage example: bicubic(x, -0.5), fixed radius 2.0
 float bicubic(float x, float a);
 
-//mitchell, b = 1.0 / 3.0, c = 1.0 / 3.0
-//catmull rom, b = 0.0, c = 0.5
-//keys formula, b + 2c = 1 
+//see https://dl.acm.org/doi/10.1145/378456.378514
 //usage example: bc_spline(x, 0.0, 0.5), fixed radius 2.0
 float bc_spline(float x, float b, float c);
 
