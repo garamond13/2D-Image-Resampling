@@ -93,7 +93,7 @@ float hermite(float x);
 float interpolating_quadratic(float x);
 
 //usage example: bicubic(x, -0.5), fixed radius 2.0
-float bicubic(float x, float a);
+float bicubic(float x, float alpha);
 
 //see https://dl.acm.org/doi/10.1145/378456.378514
 //usage example: bc_spline(x, 0.0, 0.5), fixed radius 2.0
@@ -379,12 +379,12 @@ float interpolating_quadratic(float x)
         return 0.0;
 }
 
-float bicubic(float x, float a)
+float bicubic(float x, float alpha)
 {
     if (x < 1.0)
-        return (a + 2.0) * x * x * x - (a + 3.0) * x * x + 1.0;
+        return (alpha + 2.0) * x * x * x - (alpha + 3.0) * x * x + 1.0;
     else if (x < 2.0)
-        return a * x * x * x - 5.0 * a * x * x + 8.0 * a * x - 4.0 * a;
+        return alpha * x * x * x - 5.0 * alpha * x * x + 8.0 * alpha * x - 4.0 * alpha;
     else
         return 0.0;
 }
