@@ -92,6 +92,9 @@ float hermite(float x);
 //usage example: interpolating_quadratic(x), fixed radius 1.5
 float interpolating_quadratic(float x);
 
+//usage example: fsr_kernel(x, 0.4), fixed radius 2.0
+float fsr_kernel(float x, float b);
+
 //usage example: bicubic(x, -0.5), fixed radius 2.0
 float bicubic(float x, float alpha);
 
@@ -377,6 +380,13 @@ float interpolating_quadratic(float x)
         return x * x - 2.5 * x + 1.5;
     else
         return 0.0;
+}
+
+//source https://github.com/GPUOpen-Effects/FidelityFX-FSR
+float fsr_kernel(float x, float b)
+{
+    const float a = 1.0 / (2.0 * b - b * b);
+    return (a * (b * x * x - 1.0) * (b * x * x - 1.0) - (a - 1.0)) * (0.25 * x * x - 1.0) * (0.25 * x * x - 1.0);
 }
 
 float bicubic(float x, float alpha)
