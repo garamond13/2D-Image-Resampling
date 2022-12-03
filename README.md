@@ -3,7 +3,8 @@
 
 ## Usage
 If you place this shader in the same folder as your `mpv.conf`, you can use it with `glsl-shaders-append="~~/2DImageResampling.glsl"`.
-The shader is controlled under `user configurable` section by changing macro values and by directly implementing filter kernel.
+The shader is controlled under `user configurable` section by changing macro values and by directly implementing filter kernel. \
+Requires `vo=gpu-next`.
 
 ## Notes
 - the shader is not optimised for speed
