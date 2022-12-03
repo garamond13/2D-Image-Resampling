@@ -385,8 +385,10 @@ float interpolating_quadratic(float x)
 //source https://github.com/GPUOpen-Effects/FidelityFX-FSR
 float fsr_kernel(float x, float b)
 {
-    const float a = 1.0 / (2.0 * b - b * b);
-    return (a * (b * x * x - 1.0) * (b * x * x - 1.0) - (a - 1.0)) * (0.25 * x * x - 1.0) * (0.25 * x * x - 1.0);
+    if (x < 2.0)
+        return (1.0 / (2.0 * b - b * b) * (b * x * x - 1.0) * (b * x * x - 1.0) - (1.0 / (2.0 * b - b * b) - 1.0)) * (0.25 * x * x - 1.0) * (0.25 * x * x - 1.0);
+    else
+        return 0.0;
 }
 
 float bicubic(float x, float alpha)
