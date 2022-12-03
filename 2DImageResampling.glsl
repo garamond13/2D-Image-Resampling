@@ -314,7 +314,7 @@ float parzen(float x)
 {
     if (x < 0.5)
         return 1.0 - 6.0 * x * x * (1.0 - x);
-    else
+    else //x < 1.0
         return 2.0 * (1.0 - x) * (1.0 - x) * (1.0 - x);
 }
 
