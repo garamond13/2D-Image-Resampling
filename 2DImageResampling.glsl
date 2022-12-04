@@ -184,9 +184,9 @@ vec4 hook()
         for (float x = 1.0 - rx; x <= rx; x++) {
             weight.x = get_weight((x - fcoord.x) / scale.x);
             if (LIGHT == 1)
-                color = linearize(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0));
+                color = clamp(linearize(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0)), 0.0, 1.0);
             else if (LIGHT == 2)
-                color = sigmoidize(linearize(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0)));
+                color = sigmoidize(clamp(linearize(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0)), 0.0, 1.0));
             else
                 color = textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0);
             csum += color * weight.x * weight.y;
