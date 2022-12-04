@@ -29,8 +29,8 @@ float hann(float x);
 float hamming(float x);
 
 //blackman, alpha = 0.16
-//usage example: sinc(x) * generalised_blackman(x / RADIUS, 0.16)
-float generalised_blackman(float x, float alpha);
+//usage example: sinc(x) * generalized_blackman(x / RADIUS, 0.16)
+float generalized_blackman(float x, float alpha);
 
 //usage example: sinc(x) * blackman(x / RADIUS)
 float blackman(float x);
@@ -264,7 +264,7 @@ float hamming(float x)
     return 0.54 + 0.46 * cos(M_PI * x);
 }
 
-float generalised_blackman(float x, float alpha)
+float generalized_blackman(float x, float alpha)
 {
     return (1.0 - alpha) / 2.0 + 0.5 * cos(M_PI * x) + alpha / 2.0 * cos(2.0 * M_PI * x);
 }
