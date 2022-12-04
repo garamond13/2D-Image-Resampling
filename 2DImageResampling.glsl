@@ -13,13 +13,13 @@ float sinc(float x);
 //usage example: sinc(x) * jinc(x / RADIUS * 1.21966989126650445492653885)
 float jinc(float x);
 
-//usage example: sinc(x) * cosine(x / RADIUS)
-float cosine(float x);
-
 //cosine, exponent = 1.0
 //hann, exponent = 2.0
 //usage example: sinc(x) * power_of_cosine(x / RADIUS, 2.0)
 float power_of_cosine(float x, float exponent);
+
+//usage example: sinc(x) * cosine(x / RADIUS)
+float cosine(float x);
 
 //tuky, sinc(x) * hann(x / RADIUS * a), 0.0 <= a <= 1.0
 //usage example: sinc(x) * hann(x / RADIUS)
@@ -244,14 +244,14 @@ float jinc(float x)
         return 2.0 * bessel_j1(M_PI * x) / (M_PI * x);
 }
 
-float cosine(float x)
-{
-    return cos(M_PI_2 * x);
-}
-
 float power_of_cosine(float x, float exponent)
 {
     return pow(cos(M_PI_2 * x), exponent);
+}
+
+float cosine(float x)
+{
+    return cos(M_PI_2 * x);
 }
 
 float hann(float x)
