@@ -142,10 +142,11 @@ float get_weight(float x)
 }
 //
 
-#define EPSILON 1e-7
+//source float.h
+#define FLT_EPSILON 1.192092896e-07 // smallest such that 1.0+FLT_EPSILON != 1.0
 
 //based on https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/enhance.c
-#define sigmoidize(rgba) (MIDPOINT - log(1.0 / clamp((1.0 / (1.0 + exp(CONTRAST * (MIDPOINT - 1.0))) - 1.0 / (1.0 + exp(CONTRAST * MIDPOINT))) * rgba + 1.0 / (1.0 + exp(CONTRAST * MIDPOINT)), EPSILON, 1.0 - EPSILON) - 1.0) / CONTRAST)
+#define sigmoidize(rgba) (MIDPOINT - log(1.0 / clamp((1.0 / (1.0 + exp(CONTRAST * (MIDPOINT - 1.0))) - 1.0 / (1.0 + exp(CONTRAST * MIDPOINT))) * rgba + 1.0 / (1.0 + exp(CONTRAST * MIDPOINT)), FLT_EPSILON, 1.0 - FLT_EPSILON) - 1.0) / CONTRAST)
 #define desigmoidize(rgba) (1.0 / (1.0 + exp(CONTRAST * (MIDPOINT - rgba))) - 1.0 / (1.0 + exp(CONTRAST * MIDPOINT))) / ( 1.0 / (1.0 + exp(CONTRAST * (MIDPOINT - 1.0))) - 1.0 / (1.0 + exp(CONTRAST * MIDPOINT)))
 
 //main algorithm
@@ -220,8 +221,6 @@ vec4 hook()
 #define M_PI_2 1.57079632679489661923 // pi/2
 #define M_SQRT1_2 0.707106781186547524401 // 1/sqrt(2)
 
-#define EPSILON 1e-7
-
 float bessel_j1(float x);
 float bessel_i0(float x);
 
@@ -230,7 +229,7 @@ float bessel_i0(float x);
 float sinc(float x)
 {
     //should be (x == 0), but it can cause unexplainable artifacts
-    if (x < EPSILON)
+    if (x < FLT_EPSILON)
         return 1.0;
     else
         return sin(M_PI * x) / (M_PI * x);
@@ -238,7 +237,8 @@ float sinc(float x)
 
 float jinc(float x)
 {
-    if (x == 0.0)
+    //should be (x == 0), but make it consistent with sinc
+    if (x < FLT_EPSILON)
         return 1.0;
     else
         return 2.0 * bessel_j1(M_PI * x) / (M_PI * x);
@@ -594,7 +594,7 @@ float bessel_i0(float x)
   float sum = 1.0;
   float y = x * x / 4.0;
   float t = y;
-  for (float i = 2.0; t > EPSILON; ++i) {
+  for (float i = 2.0; t > FLT_EPSILON; ++i) {
     sum += t;
     t *= y / (i * i);
   }
