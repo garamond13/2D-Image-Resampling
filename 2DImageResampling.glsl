@@ -325,7 +325,7 @@ float welch(float x)
 
 float gaussian(float x, float sigma)
 {
-    return exp(-(x * x / (2.0 * sigma * sigma));
+    return exp(-(x * x / (2.0 * sigma * sigma)));
 }
 
 float poisson(float x, float alpha)
