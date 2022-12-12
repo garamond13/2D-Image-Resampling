@@ -62,8 +62,8 @@ float parzen(float x);
 //usage example: sinc(x) * welch(x / RADIUS)
 float welch(float x);
 
-//usage example: sinc(x) * gaussian(x / RADIUS, 2.5)
-float gaussian(float x, float alpha);
+//usage example: sinc(x) * gaussian(x / RADIUS, 0.4)
+float gaussian(float x, float sigma);
 
 //hann–poisson, sinc(x) * hann(x / RADIUS) * poisson(x / RADIUS, alpha) 
 //usage example: sinc(x) * poisson(x / RADIUS, 2.0)
@@ -323,9 +323,9 @@ float welch(float x)
     return 1.0 - x * x;
 }
 
-float gaussian(float x, float alpha)
+float gaussian(float x, float sigma)
 {
-    return exp(-0.5 * alpha * alpha * x * x);
+    return exp(-(x * x / (2.0 * sigma * sigma));
 }
 
 float poisson(float x, float alpha)
