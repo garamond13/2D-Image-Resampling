@@ -209,7 +209,7 @@ vec4 hook()
     if(LIGHT == 1)
         return delinearize(clamp(csum, 0.0, 1.0));
     else if (LIGHT == 2)
-        return delinearize(desigmoidize(csum));
+        return delinearize(clamp(desigmoidize(csum), 0.0, 1.0));
     else
         return clamp(csum, 0.0, 1.0);
 }
