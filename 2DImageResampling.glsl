@@ -189,7 +189,7 @@ vec4 hook()
             else if (LIGHT == 2)
                 color = sigmoidize(linearize(clamp(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0), 0.0, 1.0)));
             else
-                color = textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0);
+                color = clamp(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0), 0.0, 1.0);
             csum += color * weight.x * weight.y;
             wsum += weight.x * weight.y;
             
@@ -207,11 +207,11 @@ vec4 hook()
         csum = mix(csum, clamp(csum, low, high), ANTIRINGING);
     
     if(LIGHT == 1)
-        return delinearize(csum);
+        return delinearize(clamp(csum, 0.0, 1.0));
     else if (LIGHT == 2)
         return delinearize(desigmoidize(csum));
     else
-        return csum;
+        return clamp(csum, 0.0, 1.0);
 }
 
 //math
