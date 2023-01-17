@@ -5,7 +5,7 @@
 //!HEIGHT OUTPUT.h
 //!DESC 2D Image Resampling
 
-//kernel filters, declarations
+//declarations of kernel filters
 
 //usage example: sinc(x) * sinc(x / RADIUS)
 float sinc(float x);
@@ -177,19 +177,19 @@ vec4 hook()
     scale.y = input_size.y / target_size.y < 1.0 ? 1.0 : input_size.y / target_size.y * ANTIALIASING;
     
     //determine sampling radiuses
-    float ry = ceil(RADIUS * scale.y); //kernel height = 2 * ry
-    float rx = ceil(RADIUS * scale.x); //kernel width = 2 * rx
+    float ry = ceil(RADIUS * scale.y); //final kernel height = 2 * ry
+    float rx = ceil(RADIUS * scale.x); //final kernel width = 2 * rx
 
     for (float y = 1.0 - ry; y <= ry; y++) {
         weight.y = get_weight((y - fcoord.y) / scale.y);
         for (float x = 1.0 - rx; x <= rx; x++) {
             weight.x = get_weight((x - fcoord.x) / scale.x);
             if (LIGHT == 1)
-                color = linearize(clamp(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0), 0.0, 1.0));
+                color = linearize(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0));
             else if (LIGHT == 2)
-                color = sigmoidize(linearize(clamp(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0), 0.0, 1.0)));
+                color = sigmoidize(clamp(linearize(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0)), 0.0, 1.0));
             else
-                color = clamp(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0), 0.0, 1.0);
+                color = textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0);
             csum += color * weight.x * weight.y;
             wsum += weight.x * weight.y;
             
@@ -206,25 +206,25 @@ vec4 hook()
     if (ANTIRINGING > 0.0)
         csum = mix(csum, clamp(csum, low, high), ANTIRINGING);
     
+    //mpv and libplacebo should do the clamping as necessary
     if(LIGHT == 1)
-        return delinearize(clamp(csum, 0.0, 1.0));
+        return delinearize(csum);
     else if (LIGHT == 2)
-        return delinearize(clamp(desigmoidize(csum), 0.0, 1.0));
+        return delinearize(desigmoidize(csum));
     else
-        return clamp(csum, 0.0, 1.0);
+        return csum;
 }
-
-//math
 
 //source corecrt_math_defines.h
 #define M_PI 3.14159265358979323846 // pi
 #define M_PI_2 1.57079632679489661923 // pi/2
 #define M_SQRT1_2 0.707106781186547524401 // 1/sqrt(2)
 
+//declarations of math functions
 float bessel_j1(float x);
 float bessel_i0(float x);
 
-//kernel filters, definitions
+//definitions of kernel filters
 
 float sinc(float x)
 {
@@ -477,7 +477,7 @@ float magic_kernel_sharp(float x)
         return 0.0;
 }
 
-//math function definitions
+//definitions of math functions
 
 //bessel function of the first kind (J1), based on https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/resize.c
 //
