@@ -159,6 +159,7 @@ vec4 hook()
     //HOOKED_raw == texture itself
     //linearize == a macro for linearization, provided by libplacebo 
     //delinearize == a macro for delinearization, provided by libplacebo
+    //HOOKED_mul == coefficient to rescale sampled value to [0.0, 1.0], float 
     
     vec2 fcoord = fract(HOOKED_pos * input_size - 0.5);
     vec2 base = HOOKED_pos - fcoord * HOOKED_pt;
@@ -185,11 +186,11 @@ vec4 hook()
         for (float x = 1.0 - rx; x <= rx; x++) {
             weight.x = get_weight((x - fcoord.x) / scale.x);
             if (LIGHT == 1)
-                color = linearize(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0));
+                color = linearize(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0) * HOOKED_mul);
             else if (LIGHT == 2)
-                color = sigmoidize(clamp(linearize(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0)), 0.0, 1.0));
+                color = sigmoidize(clamp(linearize(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0) * HOOKED_mul), 0.0, 1.0));
             else
-                color = textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0);
+                color = textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0) * HOOKED_mul;
             csum += color * weight.x * weight.y;
             wsum += weight.x * weight.y;
             
