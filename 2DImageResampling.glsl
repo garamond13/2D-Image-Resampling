@@ -480,7 +480,6 @@ float magic_kernel_sharp(float x)
 //definitions of math functions
 
 //bessel function of the first kind (J1), based on https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/resize.c
-//
 float bessel_j1(float x)
 {
     if (x == 0.0)
@@ -569,7 +568,6 @@ float bessel_j1(float x)
         return q;
     }
 }
-//
 
 //modified bessel function of the first kind (I0), note that it will fail for large values of x (>88.7)
 float bessel_i0(float x)
