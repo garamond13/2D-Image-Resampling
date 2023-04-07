@@ -555,10 +555,10 @@ float bessel_j1(float x)
         float q1_p = q1_pone[5];
         float q1_q = q1_qone[5];
         for (int i = 4; i >= 0; --i) {
-            p1_p = p1_p * (8.0 / x) * (8.0 / x) + p1_pone[i];
-            p1_q = p1_q * (8.0 / x) * (8.0 / x) + p1_qone[i];
-            q1_p = q1_p * (8.0 / x) * (8.0 / x) + q1_pone[i];
-            q1_q = q1_q * (8.0 / x) * (8.0 / x) + q1_qone[i];
+            p1_p = p1_p * 64.0 / x * x + p1_pone[i];
+            p1_q = p1_q * 64.0 / x * x + p1_qone[i];
+            q1_p = q1_p * 64.0 / x * x + q1_pone[i];
+            q1_q = q1_q * 64.0 / x * x + q1_qone[i];
         }
         p1_p /= p1_q;
         q1_p /= q1_q;
