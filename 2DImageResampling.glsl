@@ -7,73 +7,73 @@
 
 //declarations of kernel filters
 
-//usage example: sinc(x) * sinc(x / RADIUS)
+//usage example: sinc(x / BLUR) * sinc(x / RADIUS)
 float sinc(float x);
 
-//usage example: sinc(x) * jinc(x / RADIUS * 1.21966989126650445492653885)
+//usage example: sinc(x / BLUR) * jinc(x / RADIUS * 1.21966989126650445492653885)
 float jinc(float x);
 
 //cosine, exponent = 1.0
 //hann, exponent = 2.0
-//usage example: sinc(x) * power_of_cosine(x / RADIUS, 2.0)
+//usage example: sinc(x / BLUR) * power_of_cosine(x / RADIUS, 2.0)
 float power_of_cosine(float x, float exponent);
 
-//usage example: sinc(x) * cosine(x / RADIUS)
+//usage example: sinc(x / BLUR) * cosine(x / RADIUS)
 float cosine(float x);
 
-//tuky, sinc(x) * hann(x / RADIUS * a), 0.0 <= a <= 1.0
-//usage example: sinc(x) * hann(x / RADIUS)
+//tuky, sinc(x / BLUR) * hann(x / RADIUS * a), 0.0 <= a <= 1.0
+//usage example: sinc(x / BLUR) * hann(x / RADIUS)
 float hann(float x);
 
-//usage example: sinc(x) * hamming(x / RADIUS)
+//usage example: sinc(x / BLUR) * hamming(x / RADIUS)
 float hamming(float x);
 
 //blackman, alpha = 0.16
-//usage example: sinc(x) * generalized_blackman(x / RADIUS, 0.16)
+//usage example: sinc(x / BLUR) * generalized_blackman(x / RADIUS, 0.16)
 float generalized_blackman(float x, float alpha);
 
-//usage example: sinc(x) * blackman(x / RADIUS)
+//usage example: sinc(x / BLUR) * blackman(x / RADIUS)
 float blackman(float x);
 
-//usage example: sinc(x) * exact_blackman(x / RADIUS)
+//usage example: sinc(x / BLUR) * exact_blackman(x / RADIUS)
 float exact_blackman(float x);
 
-//usage example: sinc(x) * nuttall(x / RADIUS)
+//usage example: sinc(x / BLUR) * nuttall(x / RADIUS)
 float nuttall(float x);
 
-//usage example: sinc(x) * blackman_nuttall(x / RADIUS)
+//usage example: sinc(x / BLUR) * blackman_nuttall(x / RADIUS)
 float blackman_nuttall(float x);
 
-//usage example: sinc(x) * blackman_harris(x / RADIUS)
+//usage example: sinc(x / BLUR) * blackman_harris(x / RADIUS)
 float blackman_harris(float x);
 
-//usage example: sinc(x) * flat_top(x / RADIUS)
+//usage example: sinc(x / BLUR) * flat_top(x / RADIUS)
 float flat_top(float x);
 
-//usage example: sinc(x) * bohman(x / RADIUS)
+//usage example: sinc(x / BLUR) * bohman(x / RADIUS)
 float bohman(float x);
 
-//usage example: sinc(x) * kaiser(x / RADIUS, 8.5)
+//usage example: sinc(x / BLUR) * kaiser(x / RADIUS, 8.5)
 float kaiser(float x, float beta);
 
-//usage example: sinc(x) * parzen(x / RADIUS)
+//usage example: sinc(x / BLUR) * parzen(x / RADIUS)
 float parzen(float x);
 
-//usage example: sinc(x) * welch(x / RADIUS)
+//usage example: sinc(x / BLUR) * welch(x / RADIUS)
 float welch(float x);
 
-//usage example: sinc(x) * gaussian(x / RADIUS, 0.4)
+//usage example: sinc(x / BLUR) * gaussian(x / RADIUS, 0.4)
 float gaussian(float x, float sigma);
 
-//hann–poisson, sinc(x) * hann(x / RADIUS) * poisson(x / RADIUS, alpha) 
-//usage example: sinc(x) * poisson(x / RADIUS, 2.0)
+//hann–poisson, sinc(x / BLUR) * hann(x / RADIUS) * poisson(x / RADIUS, alpha) 
+//usage example: sinc(x / BLUR) * poisson(x / RADIUS, 2.0)
 float poisson(float x, float alpha);
 
-//usage example: sinc(x) * cauchy(x / RADIUS, 3.0)
+//usage example: sinc(x / BLUR) * cauchy(x / RADIUS, 3.0)
 float cauchy(float x, float alpha);
 
 //see https://www.hpl.hp.com/techreports/2007/HPL-2007-179.pdf
-//usage example: sinc(x) * said(x, 0.416, 0.61)
+//usage example: sinc(x / BLUR) * said(x, 0.416, 0.61)
 float said(float x, float chi, float eta);
 
 //nearest neighbor, RADIUS = 0.5
@@ -127,6 +127,7 @@ float magic_kernel_sharp(float x);
 #define MIDPOINT 0.75 //the midpoint of the sigmoid curve
 
 #define RADIUS 3.0 //kernel radius
+#define BLUR 1.0 //blures or sharpens the kernel, 1.0 is no effect
 #define ANTIRINGING 0.0 //reduces ringing, probably should only be used when upsampling (0.0 means off)
 #define ANTIALIASING 1.0 //trades between aliasing and ringing, probably should only be used when downsampling (1.0 means off)
 
@@ -135,7 +136,7 @@ float get_weight(float x)
     x = abs(x);
     if (x < RADIUS) {
         //kernel filter
-        return sinc(x) * hann(x / RADIUS);
+        return sinc(x / BLUR) * hann(x / RADIUS);
     }
     else
         return 0.0;
