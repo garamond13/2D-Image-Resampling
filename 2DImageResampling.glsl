@@ -73,9 +73,11 @@ float generalized_normal_window(float x, float sigma, float p);
 //usage example: sinc(x / BLUR) * said(x, 0.416, 0.61)
 float said(float x, float chi, float eta);
 
-//nearest neighbor, RADIUS = 0.5
-//usage example: box(x), fixed radius 1.0
+//usage example: box(x)
 float box(float x);
+
+////usage example: nearest_neighbor(x), fixed radius 1.0
+float nearest_neighbor(float x)
 
 //usage example: linear(x), fixed radius 1.0
 float linear(float x);
@@ -336,6 +338,14 @@ float said(float x, float chi, float eta)
 float box(float x)
 {
     return 1.0;
+}
+
+float nearest_neighbor(float x)
+{
+    if (x <= 0.5)
+        return 1.0;
+    else
+        return 0.0;
 }
 
 float linear(float x)
