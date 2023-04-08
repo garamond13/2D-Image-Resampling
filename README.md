@@ -1,8 +1,8 @@
-# 2D Image Resampling
-2D Image Resampling is a general single pass resampling algorithm made for experimental / testing use. It's designed to work as mpv player user shader.
+# Interpolation-based image scaling
+The mpv player user shader for interpolation-based image scaling. Designed for experimental / testing use.
 
 ## Usage
-- If you place this shader in the same folder as your `mpv.conf`, you can use it with `glsl-shaders-append="~~/2DImageResampling.glsl"`.
+- If you place this shader in the same folder as your `mpv.conf`, you can use it with `glsl-shaders-append="~~/interpolation_based_image_scaling.glsl"`.
 - The shader is controlled under `user configurable` section by changing macro values and by directly implementing filter kernel.
 - Requires `vo=gpu-next`.
 
