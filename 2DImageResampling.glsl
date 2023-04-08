@@ -76,7 +76,7 @@ float said(float x, float chi, float eta);
 //usage example: box(x)
 float box(float x);
 
-////usage example: nearest_neighbor(x), fixed radius 1.0
+//usage example: nearest_neighbor(x), fixed radius 1.0
 float nearest_neighbor(float x);
 
 //usage example: linear(x), fixed radius 1.0
