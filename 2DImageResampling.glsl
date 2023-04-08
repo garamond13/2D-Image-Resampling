@@ -65,7 +65,7 @@ float welch(float x);
 //usage example: sinc(x / BLUR) * gaussian(x / RADIUS, 0.4)
 float gaussian(float x, float sigma);
 
-//hann–poisson, sinc(x / BLUR) * hann(x / RADIUS) * poisson(x / RADIUS, alpha) 
+//hann–poisson, sinc(x / BLUR) * hann(x / RADIUS) * poisson(x, alpha) 
 //usage example: sinc(x / BLUR) * poisson(x / RADIUS, 2.0)
 float poisson(float x, float alpha);
 
