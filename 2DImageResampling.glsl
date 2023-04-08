@@ -13,13 +13,10 @@ float sinc(float x);
 //usage example: sinc(x / BLUR) * jinc(x / RADIUS * 1.21966989126650445492653885)
 float jinc(float x);
 
-//cosine, exponent = 1.0
-//hann, exponent = 2.0
-//usage example: sinc(x / BLUR) * power_of_cosine(x / RADIUS, 2.0)
-float power_of_cosine(float x, float exponent);
-
-//usage example: sinc(x / BLUR) * cosine(x / RADIUS)
-float cosine(float x);
+//cosine, p = 1.0
+//hann, p = 2.0
+//usage example: sinc(x / BLUR) * power_of_cosine(x / RADIUS, 1.0)
+float power_of_cosine(float x, float p);
 
 //tuky, sinc(x / BLUR) * hann(x / RADIUS * a), 0.0 <= a <= 1.0
 //usage example: sinc(x / BLUR) * hann(x / RADIUS)
@@ -31,9 +28,6 @@ float hamming(float x);
 //blackman, alpha = 0.16
 //usage example: sinc(x / BLUR) * generalized_blackman(x / RADIUS, 0.16)
 float generalized_blackman(float x, float alpha);
-
-//usage example: sinc(x / BLUR) * blackman(x / RADIUS)
-float blackman(float x);
 
 //usage example: sinc(x / BLUR) * exact_blackman(x / RADIUS)
 float exact_blackman(float x);
@@ -82,9 +76,6 @@ float said(float x, float chi, float eta);
 //nearest neighbor, RADIUS = 0.5
 //usage example: box(x), fixed radius 1.0
 float box(float x);
-
-//usage example: nearest_neighbor(x), fixed radius 1.0
-float nearest_neighbor(float x);
 
 //usage example: linear(x), fixed radius 1.0
 float linear(float x);
@@ -248,14 +239,9 @@ float jinc(float x)
         return 2.0 * bessel_j1(M_PI * x) / (M_PI * x);
 }
 
-float power_of_cosine(float x, float exponent)
+float power_of_cosine(float x, float p)
 {
-    return pow(cos(M_PI_2 * x), exponent);
-}
-
-float cosine(float x)
-{
-    return cos(M_PI_2 * x);
+    return pow(cos(M_PI_2 * x), p);
 }
 
 float hann(float x)
@@ -271,11 +257,6 @@ float hamming(float x)
 float generalized_blackman(float x, float alpha)
 {
     return (1.0 - alpha) / 2.0 + 0.5 * cos(M_PI * x) + alpha / 2.0 * cos(2.0 * M_PI * x);
-}
-
-float blackman(float x)
-{
-    return 0.42 + 0.5 * cos(M_PI * x) + 0.08 * cos(2.0 * M_PI * x);
 }
 
 float exact_blackman(float x)
@@ -355,14 +336,6 @@ float said(float x, float chi, float eta)
 float box(float x)
 {
     return 1.0;
-}
-
-float nearest_neighbor(float x)
-{
-    if (x < 0.5)
-        return 1.0;
-    else
-        return 0.0;
 }
 
 float linear(float x)
