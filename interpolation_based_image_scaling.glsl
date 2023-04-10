@@ -3,7 +3,7 @@
 //!WHEN OUTPUT.w OUTPUT.h * MAIN.w MAIN.h * = !
 //!WIDTH OUTPUT.w
 //!HEIGHT OUTPUT.h
-//!DESC 2D Image Resampling
+//!DESC interpolation_based_image_scaling
 
 //declarations of kernel filters
 
@@ -67,7 +67,7 @@ float poisson(float x, float alpha);
 float cauchy(float x, float alpha);
 
 //usage example: sinc(x / BLUR) * generalized_normal_window(x, 2.0, 3.0)
-float generalized_normal_window(float x, float sigma, float p);
+float generalized_normal_window(float x, float s, float n);
 
 //see https://www.hpl.hp.com/techreports/2007/HPL-2007-179.pdf
 //usage example: sinc(x / BLUR) * said(x, 0.416, 0.61)
@@ -325,7 +325,7 @@ float cauchy(float x, float alpha)
     return 1.0 / (1.0 + alpha * alpha * x * x);
 }
 
-float generalized_normal_window(float x, float sigma, float p)
+float generalized_normal_window(float x, float s, float n)
 {
     return exp(-pow(x / sigma, p));
 }
