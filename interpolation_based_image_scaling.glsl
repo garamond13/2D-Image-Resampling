@@ -10,8 +10,11 @@
 //usage example: sinc(x / BLUR) * sinc(x / RADIUS)
 float sinc(float x);
 
-//usage example: sinc(x / BLUR) * jinc(x / RADIUS * 1.21966989126650445492653885)
+//usage example: sinc(x / BLUR) * jinc(x / RADIUS * 1.2196698912665)
 float jinc(float x);
+
+//usage example: sinc(x / BLUR) * sphinx(x / RADIUS * 1.4302966531242)
+float sphinx(float x);
 
 //cosine, p = 1.0
 //hann, p = 2.0
@@ -66,6 +69,11 @@ float poisson(float x, float alpha);
 //usage example: sinc(x / BLUR) * cauchy(x / RADIUS, 3.0)
 float cauchy(float x, float alpha);
 
+//linear, n = 1.0
+//welch, n = 2.0
+//usage example: sinc(x / BLUR) * garamond_window(x / RADIUS, 2.0)
+float garamond_window(float x, float n);
+
 //usage example: sinc(x / BLUR) * generalized_normal_window(x, 2.0, 3.0)
 float generalized_normal_window(float x, float s, float n);
 
@@ -88,8 +96,9 @@ float hermite(float x);
 //usage example: interpolating_quadratic(x), fixed radius 1.5
 float interpolating_quadratic(float x);
 
-//usage example: fsr_kernel(x, 0.4), fixed radius 2.0
-float fsr_kernel(float x, float b);
+//original fsr kernel, c = 1.0
+//usage example: modified_fsr_kernel(x, 0.4, 1.0), fixed radius 2.0
+float modified_fsr_kernel(float x, float b, float c);
 
 //usage example: bicubic(x, -0.5), fixed radius 2.0
 float bicubic(float x, float alpha);
@@ -218,14 +227,15 @@ vec4 hook()
 #define EPSILON 1.192093e-7
 
 //declarations of math functions
+float bessel_J1(float x);
+float bessel_I0(float x);
 float bessel_j1(float x);
-float bessel_i0(float x);
 
 //definitions of kernel filters
 
 float sinc(float x)
 {
-    //should be (x == 0), but it can cause unexplainable artifacts
+    //should be (x == 0)
     if (x < EPSILON)
         return 1.0;
     else
@@ -234,11 +244,21 @@ float sinc(float x)
 
 float jinc(float x)
 {
-    //should be (x == 0), but make it consistent with sinc
+    //should be (x == 0)
     if (x < EPSILON)
         return 1.0;
     else
-        return 2.0 * bessel_j1(M_PI * x) / (M_PI * x);
+        return 2.0 * bessel_J1(M_PI * x) / (M_PI * x);
+}
+
+//source https://github.com/haasn/mp/commit/7d10c9b76f39bfd2fe606b8702b39888d117c685
+float sphinx(float x)
+{
+    //should be (x == 0)
+    if (x < EPSILON)
+        return 1.0;
+    else
+        return 3.0 * bessel_j1(M_PI * x) / (M_PI * x);
 }
 
 float power_of_cosine(float x, float p)
@@ -294,7 +314,7 @@ float bohman(float x)
 float kaiser(float x, float beta)
 {
     //beta = pi * alpha
-    return bessel_i0(beta * sqrt(1.0 - x * x)) / bessel_i0(beta);
+    return bessel_I0(beta * sqrt(1.0 - x * x)) / bessel_I0(beta);
 }
 
 float parzen(float x)
@@ -325,9 +345,14 @@ float cauchy(float x, float alpha)
     return 1.0 / (1.0 + alpha * alpha * x * x);
 }
 
+float garamond_window(float x, float n)
+{
+    return 1.0 - pow(x, n);
+}
+
 float generalized_normal_window(float x, float s, float n)
 {
-    return exp(-pow(x / sigma, p));
+    return exp(-pow(x / s, n));
 }
 
 float said(float x, float chi, float eta)
@@ -374,11 +399,11 @@ float interpolating_quadratic(float x)
         return 0.0;
 }
 
-//source https://github.com/GPUOpen-Effects/FidelityFX-FSR
-float fsr_kernel(float x, float b)
+//based on https://github.com/GPUOpen-Effects/FidelityFX-FSR
+float modified_fsr_kernel(float x, float b, float c)
 {
     if (x < 2.0)
-        return (1.0 / (2.0 * b - b * b) * (b * x * x - 1.0) * (b * x * x - 1.0) - (1.0 / (2.0 * b - b * b) - 1.0)) * (0.25 * x * x - 1.0) * (0.25 * x * x - 1.0);
+        return (1.0 / (2.0 * b - b * b) * (b / (c * c) * x * x - 1.0) * (b / (c * c) * x * x - 1.0) - (1.0 / (2.0 * b - b * b) - 1.0)) * (0.25 * x * x - 1.0) * (0.25 * x * x - 1.0);
     else
         return 0.0;
 }
@@ -472,7 +497,7 @@ float magic_kernel_sharp(float x)
 //definitions of math functions
 
 //bessel function of the first kind (J1), based on https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/resize.c
-float bessel_j1(float x)
+float bessel_J1(float x)
 {
     if (x == 0.0)
         return 0.0;
@@ -561,19 +586,88 @@ float bessel_j1(float x)
     }
 }
 
-//modified bessel function of the first kind (I0), note that it will fail for large values of x (>88.7)
-float bessel_i0(float x)
+//modified bessel function of the first kind (I0), based on https://www.boost.org/doc/libs/1_54_0/libs/math/doc/html/math_toolkit/bessel/mbessel.html
+float bessel_I0(float x)
 {
+    const float P1[] = {
+        -2.2335582639474375249e+15,
+        -5.5050369673018427753e+14,
+        -3.2940087627407749166e+13,
+        -8.4925101247114157499e+11,
+        -1.1912746104985237192e+10,
+        -1.0313066708737980747e+08,
+        -5.9545626019847898221e+05,
+        -2.4125195876041896775e+03,
+        -7.0935347449210549190e+00,
+        -1.5453977791786851041e-02,
+        -2.5172644670688975051e-05,
+        -3.0517226450451067446e-08,
+        -2.6843448573468483278e-11,
+        -1.5982226675653184646e-14,
+        -5.2487866627945699800e-18,
+    };
+    const float Q1[] = {
+        -2.2335582639474375245e+15,
+        7.8858692566751002988e+12,
+        -1.2207067397808979846e+10,
+        1.0377081058062166144e+07,
+        -4.8527560179962773045e+03,
+        1.0,
+    };
+    const float P2[] = {
+        -2.2210262233306573296e-04,
+        1.3067392038106924055e-02,
+        -4.4700805721174453923e-01,
+        5.5674518371240761397e+00,
+        -2.3517945679239481621e+01,
+        3.1611322818701131207e+01,
+        -9.6090021968656180000e+00,
+    };
+    const float Q2[] = {
+        -5.5194330231005480228e-04,
+        3.2547697594819615062e-02,
+        -1.1151759188741312645e+00,
+        1.3982595353892851542e+01,
+        -6.0228002066743340583e+01,
+        8.5539563258012929600e+01,
+        -3.1446690275135491500e+01,
+        1.0,
+    };
     x = abs(x);
-    float y, z;
-    if (x < 3.75) {
-        y = x / 3.75;
-        y *= y;
-        z = 1.0 + y * (3.5156229 + y * (3.0899424 + y * (1.2067492 + y * (0.2659732 + y * (0.0360768 + y * 0.0045813)))));
+    if (x == 0.0)
+        return 1.0;
+    else if (x <= 15.0) {
+        float y = x * x;
+        float p1sum = P1[14];
+        for (int i = 13; i >= 0; --i) {
+            p1sum *= y;
+            p1sum += P1[i];
+        }
+        float q1sum = Q1[5];
+        for (int i = 4; i >= 0; --i) {
+            q1sum *= y;
+            q1sum += Q1[i];
+        }
+        return p1sum / q1sum;
     }
     else {
-        y = 3.75 / x;
-        z = (exp(x) / sqrt(x)) * (0.39894228 + y * (0.01328592 + y * (0.00225319 + y * (-0.00157565 + y * (0.00916281 + y * (-0.02057706 + y * (0.02635537 + y * (-0.01647633 + y * 0.00392377))))))));
+        float y = 1.0 / x - 1.0 / 15.0;
+        float p2sum = P2[6];
+        for (int i = 5; i >= 0; --i) {
+            p2sum *= y;
+            p2sum += P2[i];
+        }
+        float q2sum = Q2[7];
+        for (int i = 6; i >= 0; --i) {
+            q2sum *= y;
+            q2sum += Q2[i];
+        }
+        return exp(x) / sqrt(x) * p2sum / q2sum;
     }
-    return z;
+}
+
+//spherical bessel function of the first kind (j1)
+float bessel_j1(float x)
+{
+    return sin(x) / (x * x) - cos(x) / x;
 }
