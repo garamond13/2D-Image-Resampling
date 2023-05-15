@@ -7,78 +7,86 @@
 
 //declarations of kernel filters
 
-//usage example: sinc(x / BLUR) * sinc(x / RADIUS)
+//usage example as window: sinc(x / RADIUS)
+//usage example as base: sinc(x / BLUR)
 float sinc(float x);
 
-//usage example: sinc(x / BLUR) * jinc(x / RADIUS * 1.2196698912665)
+//usage example as window: jinc(x / RADIUS * 1.2196698912665)
+//usage example as base: jinc(x / BLUR)
 float jinc(float x);
 
-//usage example: sinc(x / BLUR) * sphinx(x / RADIUS * 1.4302966531242)
+//usage example as window: sphinx(x / RADIUS * 1.4302966531242)
 float sphinx(float x);
 
-//cosine, p = 1.0
-//hann, p = 2.0
-//usage example: sinc(x / BLUR) * power_of_cosine(x / RADIUS, 1.0)
-float power_of_cosine(float x, float p);
+//cosine: n = 1.0
+//hann: n = 2.0
+//box: n=0.0
+//usage example as window: power_of_cosine(x / RADIUS, 1.0)
+float power_of_cosine(float x, float n);
 
-//tuky, sinc(x / BLUR) * hann(x / RADIUS * a), 0.0 <= a <= 1.0
-//usage example: sinc(x / BLUR) * hann(x / RADIUS)
-float hann(float x);
+//common tukey: a=0.5
+//hann: a=1.0
+//box: a=0.0
+//usage example as window: tukey(x / RADIUS, 0.5)
+float tukey(float x, float a);
 
-//usage example: sinc(x / BLUR) * hamming(x / RADIUS)
+//usage example as window: hamming(x / RADIUS)
 float hamming(float x);
 
-//blackman, alpha = 0.16
-//usage example: sinc(x / BLUR) * generalized_blackman(x / RADIUS, 0.16)
-float generalized_blackman(float x, float alpha);
+//blackman: n=1.0
+//common blackman: a=0.16 n=1.0
+//hann: a=0.0 n=1.0
+//cosine: a=0.0 n=0.5
+//box: n=0.0
+//usage example as window: power_of_blackman(x / RADIUS, 0.16, 1.0)
+float power_of_blackman(float x, float a);
 
-//usage example: sinc(x / BLUR) * exact_blackman(x / RADIUS)
+//usage example as window: exact_blackman(x / RADIUS)
 float exact_blackman(float x);
 
-//usage example: sinc(x / BLUR) * nuttall(x / RADIUS)
+//usage example as window: nuttall(x / RADIUS)
 float nuttall(float x);
 
-//usage example: sinc(x / BLUR) * blackman_nuttall(x / RADIUS)
+//usage example as window: blackman_nuttall(x / RADIUS)
 float blackman_nuttall(float x);
 
-//usage example: sinc(x / BLUR) * blackman_harris(x / RADIUS)
+//usage example as window: blackman_harris(x / RADIUS)
 float blackman_harris(float x);
 
-//usage example: sinc(x / BLUR) * flat_top(x / RADIUS)
+//usage example as window: flat_top(x / RADIUS)
 float flat_top(float x);
 
-//usage example: sinc(x / BLUR) * bohman(x / RADIUS)
+//usage example as window: bohman(x / RADIUS)
 float bohman(float x);
 
-//usage example: sinc(x / BLUR) * kaiser(x / RADIUS, 8.5)
+//usage example as window: kaiser(x / RADIUS, 8.5)
 float kaiser(float x, float beta);
 
-//usage example: sinc(x / BLUR) * parzen(x / RADIUS)
+//usage example as window: parzen(x / RADIUS)
 float parzen(float x);
 
-//usage example: sinc(x / BLUR) * welch(x / RADIUS)
-float welch(float x);
-
-//usage example: sinc(x / BLUR) * gaussian(x / RADIUS, 0.4)
+//usage example as window: gaussian(x / RADIUS, 0.4)
 float gaussian(float x, float sigma);
 
-//hann–poisson, sinc(x / BLUR) * hann(x / RADIUS) * poisson(x, alpha) 
-//usage example: sinc(x / BLUR) * poisson(x / RADIUS, 2.0)
+//hann–poisson: tukey(x / RADIUS, 1.0) * poisson(x, alpha) 
+//usage example as window:poisson(x / RADIUS, 2.0)
 float poisson(float x, float alpha);
 
-//usage example: sinc(x / BLUR) * cauchy(x / RADIUS, 3.0)
+//usage example as window: cauchy(x / RADIUS, 3.0)
 float cauchy(float x, float alpha);
 
-//linear, n = 1.0
-//welch, n = 2.0
-//usage example: sinc(x / BLUR) * garamond_window(x / RADIUS, 2.0)
-float garamond_window(float x, float n);
+//garamond window: m=1.0
+//linear: n=1.0 m=1.0
+//welch: n=2.0 m=1.0
+//box: m=0.0
+//usage example as window: power_of_garamond_window(x / RADIUS, 2.0, 1.0)
+float power_of_garamond_window(float x, float n, float m);
 
-//usage example: sinc(x / BLUR) * generalized_normal_window(x, 2.0, 3.0)
+//gaussian: n=2.0
+//usage example as window: generalized_normal_window(x, 2.0, 3.0)
 float generalized_normal_window(float x, float s, float n);
 
-//see https://www.hpl.hp.com/techreports/2007/HPL-2007-179.pdf
-//usage example: sinc(x / BLUR) * said(x, 0.416, 0.61)
+//usage example as window: said(x, 0.416, 0.61)
 float said(float x, float chi, float eta);
 
 //usage example: box(x)
@@ -90,9 +98,6 @@ float nearest_neighbor(float x);
 //usage example: linear(x), fixed radius 1.0
 float linear(float x);
 
-//usage example: hermite(x), fixed radius 1.0
-float hermite(float x);
-
 //usage example: interpolating_quadratic(x), fixed radius 1.5
 float interpolating_quadratic(float x);
 
@@ -101,9 +106,15 @@ float interpolating_quadratic(float x);
 float modified_fsr_kernel(float x, float b, float c);
 
 //usage example: bicubic(x, -0.5), fixed radius 2.0
-float bicubic(float x, float alpha);
+float bicubic(float x, float a);
 
-//see https://dl.acm.org/doi/10.1145/378456.378514
+//hermite: b=0.0 c=0.0
+//spline: b=1.0 c=0.0
+//catmull_rom: b=0.0 c=0.5
+//mitchell: b=1.0/3.0 c=1.0/3.0
+//robidoux: b=0.37821575509399866 c=0.31089212245300067
+//robidouxsharp: b=0.2620145123990142 c=0.3689927438004929
+//robidouxsoft: b=0.67962275898295921 c=0.1601886205085204
 //usage example: bc_spline(x, 0.0, 0.5), fixed radius 2.0
 float bc_spline(float x, float b, float c);
 
@@ -131,17 +142,19 @@ float magic_kernel_sharp(float x);
 #define CONTRAST 6.5 //slope of the sigmoid curve
 #define MIDPOINT 0.75 //the midpoint of the sigmoid curve
 
+//use cylindrical resampling
+#define USE_CYLINDRICAL false //true or false
+
 #define RADIUS 3.0 //kernel radius
 #define BLUR 1.0 //blures or sharpens the kernel, 1.0 is no effect
 #define ANTIRINGING 0.0 //reduces ringing, probably should only be used when upsampling (0.0 means off)
-#define ANTIALIASING 1.0 //trades between aliasing and ringing, probably should only be used when downsampling (1.0 means off)
+#define ANTIALIASING 1.0 //oversample or undersample, probably should only be used when downsampling (1.0 means off)
 
 float get_weight(float x)
 {
-    x = abs(x);
     if (x < RADIUS) {
-        //kernel filter
-        return sinc(x / BLUR) * hann(x / RADIUS);
+        //kernel function
+        return sinc(x / BLUR) * hamming(x / RADIUS);
     }
     else
         return 0.0;
@@ -149,10 +162,10 @@ float get_weight(float x)
 //
 
 //based on https://github.com/ImageMagick/ImageMagick/blob/main/MagickCore/enhance.c
-#define sigmoidize(rgba) (MIDPOINT - log(1.0 / ((1.0 / (1.0 + exp(CONTRAST * (MIDPOINT - 1.0))) - 1.0 / (1.0 + exp(CONTRAST * MIDPOINT))) * rgba + 1.0 / (1.0 + exp(CONTRAST * MIDPOINT))) - 1.0) / CONTRAST)
-#define desigmoidize(rgba) (1.0 / (1.0 + exp(CONTRAST * (MIDPOINT - rgba))) - 1.0 / (1.0 + exp(CONTRAST * MIDPOINT))) / ( 1.0 / (1.0 + exp(CONTRAST * (MIDPOINT - 1.0))) - 1.0 / (1.0 + exp(CONTRAST * MIDPOINT)))
+#define sigmoidize(rgba) (MIDPOINT - log(1.0 / ((1.0 / (1.0 + exp(CONTRAST * (MIDPOINT - 1.0))) - 1.0 / (1.0 + exp(CONTRAST * MIDPOINT))) * (rgba) + 1.0 / (1.0 + exp(CONTRAST * MIDPOINT))) - 1.0) / CONTRAST)
+#define desigmoidize(rgba) (1.0 / (1.0 + exp(CONTRAST * (MIDPOINT - (rgba)))) - 1.0 / (1.0 + exp(CONTRAST * MIDPOINT))) / ( 1.0 / (1.0 + exp(CONTRAST * (MIDPOINT - 1.0))) - 1.0 / (1.0 + exp(CONTRAST * MIDPOINT)))
 
-//main algorithm
+//the main algorithm
 vec4 hook()
 {
     //HOOKED_pos == texture coordinates [0.0, 1.0], vec2(u, v)
@@ -175,19 +188,23 @@ vec4 hook()
     vec4 low = vec4(1e9);
     vec4 high = vec4(-1e9);
 
-    //only relevant for downsampling, when upsampling scale should be and is set to 1.0
-    vec2 scale;
-    scale.x = input_size.x / target_size.x < 1.0 ? 1.0 : input_size.x / target_size.x * ANTIALIASING;
-    scale.y = input_size.y / target_size.y < 1.0 ? 1.0 : input_size.y / target_size.y * ANTIALIASING;
+    float scale = 1.0;
     
-    //determine sampling radiuses
-    float ry = ceil(RADIUS * scale.y); //final kernel height = 2 * ry
-    float rx = ceil(RADIUS * scale.x); //final kernel width = 2 * rx
+    //only relevant for downsampling, when upsampling scale should be and is set to 1.0
+    if (input_size.x / target_size.x > 1.0 || input_size.y / target_size.y > 1.0)
+        scale = max(input_size.x / target_size.x, input_size.y / target_size.y) * ANTIALIASING;
 
-    for (float y = 1.0 - ry; y <= ry; y++) {
-        weight.y = get_weight((y - fcoord.y) / scale.y);
-        for (float x = 1.0 - rx; x <= rx; x++) {
-            weight.x = get_weight((x - fcoord.x) / scale.x);
+    for (float y = 1.0 - ceil(RADIUS * scale); y <= ceil(RADIUS * scale); y++) {
+        //for the cylindrical resampling simply ignore the y component by setting it to 1.0
+        if (USE_CYLINDRICAL)
+            weight.y = 1.0;
+        else
+            weight.y = get_weight(abs((y - fcoord.y) / scale));
+        for (float x = 1.0 - ceil(RADIUS * scale); x <= ceil(RADIUS * scale); x++) {
+            if (USE_CYLINDRICAL)
+                weight.x = get_weight(length(vec2(x, y) - fcoord) / scale);
+            else
+                weight.x = get_weight(abs((x - fcoord.x) / scale));
             if (LIGHT == 1)
                 color = linearize(textureLod(HOOKED_raw, base + HOOKED_pt * vec2(x, y), 0.0) * HOOKED_mul);
             else if (LIGHT == 2)
@@ -198,7 +215,7 @@ vec4 hook()
             wsum += weight.x * weight.y;
             
             //antiringing
-            if (ANTIRINGING > 0.0 && x >= 0.0 && y >= 0.0 && x <= 1.0 && y <= 1.0) {
+            if (ANTIRINGING > 0.0 && y >= 0.0 && y <= 1.0 && x >= 0.0 && x <= 1.0) {
                 low = min(low, color);
                 high = max(high, color);
             }
@@ -261,14 +278,14 @@ float sphinx(float x)
         return 3.0 * bessel_j1(M_PI * x) / (M_PI * x);
 }
 
-float power_of_cosine(float x, float p)
+float power_of_cosine(float x, float n)
 {
-    return pow(cos(M_PI_2 * x), p);
+    return pow(cos(M_PI_2 * x), n);
 }
 
-float hann(float x)
+float tukey(float x, float a)
 {
-    return 0.5 + 0.5 * cos(M_PI * x);
+    return 0.5 + 0.5 * cos(M_PI * x * a);
 }
 
 float hamming(float x)
@@ -276,9 +293,9 @@ float hamming(float x)
     return 0.54 + 0.46 * cos(M_PI * x);
 }
 
-float generalized_blackman(float x, float alpha)
+float power_of_blackman(float x, float a, float n)
 {
-    return (1.0 - alpha) / 2.0 + 0.5 * cos(M_PI * x) + alpha / 2.0 * cos(2.0 * M_PI * x);
+    return pow((1.0 - a) / 2.0 + 0.5 * cos(M_PI * x) + a / 2.0 * cos(2.0 * M_PI * x), n);
 }
 
 float exact_blackman(float x)
@@ -325,11 +342,6 @@ float parzen(float x)
         return 2.0 * (1.0 - x) * (1.0 - x) * (1.0 - x);
 }
 
-float welch(float x)
-{
-    return 1.0 - x * x;
-}
-
 float gaussian(float x, float sigma)
 {
     return exp(-(x * x / (2.0 * sigma * sigma)));
@@ -345,9 +357,9 @@ float cauchy(float x, float alpha)
     return 1.0 / (1.0 + alpha * alpha * x * x);
 }
 
-float garamond_window(float x, float n)
+float power_of_garamond_window(float x, float n, float m)
 {
-    return 1.0 - pow(x, n);
+    return pow(1.0 - pow(x, n), m);
 }
 
 float generalized_normal_window(float x, float s, float n)
@@ -381,14 +393,6 @@ float linear(float x)
         return 0.0;
 }
 
-float hermite(float x)
-{
-    if(x < 1.0)
-        return (2.0 * x - 3.0) * x * x + 1.0;
-    else
-        return 0.0;
-}
-
 float interpolating_quadratic(float x)
 {
     if (x < 0.5)
@@ -408,12 +412,12 @@ float modified_fsr_kernel(float x, float b, float c)
         return 0.0;
 }
 
-float bicubic(float x, float alpha)
+float bicubic(float x, float a)
 {
     if (x < 1.0)
-        return (alpha + 2.0) * x * x * x - (alpha + 3.0) * x * x + 1.0;
+        return (a + 2.0) * x * x * x - (a + 3.0) * x * x + 1.0;
     else if (x < 2.0)
-        return alpha * x * x * x - 5.0 * alpha * x * x + 8.0 * alpha * x - 4.0 * alpha;
+        return a * x * x * x - 5.0 * a * x * x + 8.0 * a * x - 4.0 * a;
     else
         return 0.0;
 }
