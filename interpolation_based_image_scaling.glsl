@@ -39,7 +39,7 @@ float hamming(float x);
 //cosine: a=0.0 n=0.5
 //box: n=0.0
 //usage example as window: power_of_blackman(x / RADIUS, 0.16, 1.0)
-float power_of_blackman(float x, float a);
+float power_of_blackman(float x, float a, float n);
 
 //usage example as window: exact_blackman(x / RADIUS)
 float exact_blackman(float x);
@@ -59,8 +59,9 @@ float flat_top(float x);
 //usage example as window: bohman(x / RADIUS)
 float bohman(float x);
 
-//usage example as window: kaiser(x / RADIUS, 8.5)
-float kaiser(float x, float beta);
+//kaiser: n=2.0
+//usage example as window: kaiser_garamond(x / RADIUS, 8.5, 2.0)
+float kaiser_garamond(float x, float beta, float n);
 
 //usage example as window: parzen(x / RADIUS)
 float parzen(float x);
@@ -329,10 +330,9 @@ float bohman(float x)
     return (1.0 - x) * cos(M_PI *  x) + sin(M_PI * x) / M_PI;
 }
 
-float kaiser(float x, float beta)
+float kaiser_garamond(float x, float beta, float n)
 {
-    //beta = pi * alpha
-    return bessel_I0(beta * sqrt(1.0 - x * x)) / bessel_I0(beta);
+    return bessel_I0(beta * sqrt(1.0 - pow(x, n))) / bessel_I0(beta);
 }
 
 float parzen(float x)
