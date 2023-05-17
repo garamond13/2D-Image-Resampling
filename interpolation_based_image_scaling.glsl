@@ -239,6 +239,7 @@ vec4 hook()
 //source corecrt_math_defines.h
 #define M_PI 3.14159265358979323846 // pi
 #define M_PI_2 1.57079632679489661923 // pi/2
+#define M_SQRT2 1.41421356237309504880 // sqrt(2)
 #define M_SQRT1_2 0.707106781186547524401 // 1/sqrt(2)
 
 #define EPSILON 1.192093e-7
@@ -379,10 +380,18 @@ float box(float x)
 
 float nearest_neighbor(float x)
 {
-    if (x <= 0.5)
-        return 1.0;
-    else
-        return 0.0;
+    if (USE_CYLINDRICAL) {
+        if (x <= 0.5 * M_SQRT2)
+            return 1.0;
+        else
+            return 0.0;
+    }
+    else {
+        if (x <= 0.5)
+            return 1.0;
+        else
+            return 0.0;
+    }
 }
 
 float linear(float x)
