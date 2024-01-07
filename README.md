@@ -1,5 +1,5 @@
 # Interpolation-based image scaling
-The mpv player user shader for interpolation-based image scaling. Designed for experimental / testing use.
+The MPV player user shader for interpolation-based image scaling. Designed for experimental, testing or educational use.
 
 ## Usage
 - If you place this shader in the same folder as your `mpv.conf`, you can use it with `glsl-shaders-append="~~/interpolation_based_image_scaling.glsl"`.
