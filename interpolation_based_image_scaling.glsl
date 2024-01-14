@@ -612,7 +612,7 @@ float bessel_J1(float x)
     if (x < 2.2931157)
         return x / 2.0 - x * x * x / 16.0 + x * x * x * x * x / 384.0 - x * x * x * x * x * x * x / 18432.0;
     else
-        sqrt(M_2_PI / x) * (1.0 + 0.1875 / (x * x) - 0.1933594 / (x * x * x * x)) * cos(x - 3.0 * M_PI_4 + 0.375 / x - 0.1640625 / (x * x * x));
+        return sqrt(M_2_PI / x) * (1.0 + 0.1875 / (x * x) - 0.1933594 / (x * x * x * x)) * cos(x - 3.0 * M_PI_4 + 0.375 / x - 0.1640625 / (x * x * x));
 }
 
 // Modified Bessel function of the first kind, order zero (I0).
@@ -622,7 +622,7 @@ float bessel_I0(float x)
     if (x < 4.9706658)
         return 1.0 + x * x / 4.0 + x * x * x * x / 64.0 + x * x * x * x * x * x / 2304.0 + x * x * x * x * x * x * x * x / 147456.0;
     else
-        inversesqrt(2.0 * M_PI * (x)) * exp(x);
+        return inversesqrt(2.0 * M_PI * (x)) * exp(x);
 }
 
 // Spherical bessel function of the first kind, order one (j1).
