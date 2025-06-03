@@ -1,8 +1,8 @@
-# 2D Image resampling
+# 2D image resampling
 The MPV player user shader for interpolation-based image scaling. Designed for experimental, testing or educational use.
 
 ## Usage
-- If you place this shader in the same folder as your `mpv.conf`, you can use it with `glsl-shaders-append="~~/interpolation_based_image_scaling.glsl"`.
+- If you place this shader in the same folder as your `mpv.conf`, you can use it with `glsl-shaders-append="~~/2d_image_resampling.glsl"`.
 - The shader is controlled under `user configurable` section by changing macro values and by directly implementing filter kernel.
 - Requires `vo=gpu-next`.
 
