@@ -1,4 +1,4 @@
-# Interpolation-based image scaling
+# 2D Image resampling
 The MPV player user shader for interpolation-based image scaling. Designed for experimental, testing or educational use.
 
 ## Usage
@@ -8,7 +8,6 @@ The MPV player user shader for interpolation-based image scaling. Designed for e
 
 ## Notes
 - The shader is not optimised for speed.
-- Antiringing behaves a bit differently compared with the same technique implemented in separated passes.
 - In general, you may expect slightly different results from different implementations of resampling algorithms.
 - For `linearize` and `delinearize` macros see `pl_shader_linearize` and `pl_shader_delinearize` functions in https://github.com/haasn/libplacebo/blob/master/src/shaders/colorspace.c
 - In general for sintax of mpv user shaders see https://libplacebo.org/custom-shaders/
